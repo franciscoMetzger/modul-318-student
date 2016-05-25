@@ -4,11 +4,21 @@ using Newtonsoft.Json;
 
 namespace SwissTransport
 {
+    //http://transport.opendata.ch/docs.html
     public class Transport : ITransport
     {
         public Stations GetStations(string query)
         {
-            var request = CreateWebRequest("http://transport.opendata.ch/v1/locations?query=" + query);
+            string completeQuery;
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                completeQuery = "http://transport.opendata.ch/v1/locations?type=all";
+            }
+            else
+            {
+                completeQuery = "http://transport.opendata.ch/v1/locations?query=" + query;
+            }
+            var request = CreateWebRequest("http://transport.opendata.ch/v1/locations?" + (string.IsNullOrWhiteSpace(query) ? string.Empty : ("query=" + query)));
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
 
